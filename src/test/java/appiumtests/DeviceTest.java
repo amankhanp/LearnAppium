@@ -28,13 +28,12 @@ public class DeviceTest {
         androidDriver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), cap);
     }
 
-    @Test()
+    @Test(priority = 0)
     public void setDeviceLockWithPin() throws InterruptedException {
         Map<String, Object> args = new HashMap<>();
         args.put("command", "locksettings set-pin");
         args.put("args", "--new 1111");
-        String result = String.valueOf(androidDriver.executeScript("mobile: shell", args));
-        System.out.println(result);
+        androidDriver.executeScript("mobile: shell", args);
         Thread.sleep(500);
         androidDriver.lockDevice();
         System.out.println("Device lock pin set successful");
@@ -47,8 +46,7 @@ public class DeviceTest {
             Map<String, Object> args = new HashMap<>();
             args.put("command", "locksettings set-pin");
             args.put("args", "--old 1111");
-            String result = String.valueOf(androidDriver.executeScript("mobile: shell", args));
-            System.out.println(result);
+            androidDriver.executeScript("mobile: shell", args);
             Thread.sleep(500);
         }
         System.out.println("Device unlocked successful");
@@ -61,8 +59,7 @@ public class DeviceTest {
             Map<String, Object> args = new HashMap<>();
             args.put("command", "locksettings clear");
             args.put("args", "--old 1111");
-            String result = String.valueOf(androidDriver.executeScript("mobile: shell", args));
-            System.out.println(result);
+            androidDriver.executeScript("mobile: shell", args);
             Thread.sleep(500);
         }
         System.out.println("Device pin removed successful");
