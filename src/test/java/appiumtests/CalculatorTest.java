@@ -2,14 +2,11 @@ package appiumtests;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
-import io.appium.java_client.android.AndroidDriver;
 import org.junit.Assert;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 import java.net.MalformedURLException;
-import java.net.URL;
 
 public class CalculatorTest {
 
@@ -19,46 +16,23 @@ public class CalculatorTest {
     public static String CALC_KEY_EQUALS = "com.android.calculator2:id/eq";
     public static String CALC_KEY_RESULT = "com.android.calculator2:id/result";
 
-    //WebDriver webDriver;
-    static AppiumDriver<MobileElement> appiumDriver;
-    //AndroidDriver androidDriver;
-
-    public int value;
+    public DesiredCapabilities cap;
+    public TestConfig testConfig;
+    AppiumDriver<MobileElement> appiumDriver;
 
     public static void main(String[] args) {
+        CalculatorTest calculatorTest = new CalculatorTest();
+        System.out.println("---Connect Appium and Open Calculator Application---");
         try {
-            System.out.println("---Connect Appium and Open Calculator Application---");
-            Assert.assertEquals("Calculated value result is not same",5, openCalculator());
-            System.out.println("---Validation Successful---");
+            Assert.assertEquals("Calculated value result is not same",5, calculatorTest.openCalculator());
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            e.getCause();
-            e.getMessage();
         }
+        System.out.println("---Validation Successful---");
     }
 
-    public static int openCalculator() throws MalformedURLException {
-        DesiredCapabilities cap = new DesiredCapabilities();
-
-        System.out.println("---Device Connection Details---");
-        cap.setCapability("deviceName", "nexus6");
-        cap.setCapability("udid","emulator-5554");
-        cap.setCapability("platformName","Android");
-        cap.setCapability("platformVersion","9");
-
-        //cap.setCapability("appPackage","com.google.android.calculator");
-        //cap.setCapability("appActivity","com.android.calculator2.Calculator");
-
-        System.out.println("---App Package Details---");
-        cap.setCapability("appPackage","com.android.calculator2");
-        cap.setCapability("appActivity","com.android.calculator2.Calculator");
-
-        System.out.println("---Server Details---");
-        URL url = new URL("http://127.0.0.1:4723/wd/hub");
-        appiumDriver = new AppiumDriver<MobileElement>(url, cap);
-
-        System.out.println("-----Application Started-----");
-
+    public int openCalculator() throws MalformedURLException {
+        appiumDriver = setupAppDetails();
         MobileElement two = appiumDriver.findElement(By.id(CALC_KEY_TWO));
         MobileElement plus = appiumDriver.findElement(By.id(CALC_KEY_PLUS));
         MobileElement three = appiumDriver.findElement(By.id(CALC_KEY_THREE));
@@ -70,5 +44,16 @@ public class CalculatorTest {
         three.click();
         equals.click();
         return Integer.parseInt(result.getText());
+    }
+
+    public AppiumDriver<MobileElement> setupAppDetails() throws MalformedURLException {
+        cap = testConfig.setUp();
+        System.out.println("---Setup Package Details---");
+        cap.setCapability("appPackage","com.android.calculator2");
+        cap.setCapability("appActivity","com.android.calculator2.Calculator");
+
+        System.out.println("-----Application Started-----");
+        appiumDriver = testConfig.startAppium(cap);
+        return appiumDriver;
     }
 }
