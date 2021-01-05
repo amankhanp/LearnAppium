@@ -27,10 +27,11 @@ public class DeviceTest {
     }
 
     @Test(priority = 0)
-    public void setDeviceLockWithPin() throws InterruptedException {
+    public void lockDeviceWithPin() throws InterruptedException {
+        System.out.println("device lock in progress......");
         Map<String, Object> args = new HashMap<>();
         args.put("command", "locksettings set-pin");
-        args.put("args", "--new 1111");
+        args.put("args", "--old 1111");
         androidDriver.executeScript("mobile: shell", args);
         Thread.sleep(500);
         androidDriver.lockDevice();
@@ -39,7 +40,9 @@ public class DeviceTest {
 
     @Test(priority = 1)
     public void unlockDeviceWithPin() throws InterruptedException {
+        androidDriver.lockDevice();
         if(androidDriver.isDeviceLocked()) {
+            System.out.println("device unlock in progress......");
             //Runtime.getRuntime().exec( "locksettings set-pin --new 1234");
             Map<String, Object> args = new HashMap<>();
             args.put("command", "locksettings set-pin");
@@ -54,6 +57,7 @@ public class DeviceTest {
     @Test(priority = 2)
     public void removeDeviceLock() throws InterruptedException {
         if(androidDriver.isDeviceLocked()) {
+            System.out.println("device lock removal in progress......");
             Map<String, Object> args = new HashMap<>();
             args.put("command", "locksettings clear");
             args.put("args", "--old 1111");
